@@ -1,6 +1,6 @@
 const PREFIX = 'senaigo:sala:';
 
-// Conteúdo gravado nos QR Codes de cada sala.
+
 export const buildQrPayload = (salaId) => `${PREFIX}${salaId}`;
 
 const toSalaId = (value) => {
@@ -8,11 +8,7 @@ const toSalaId = (value) => {
   return Number.isInteger(n) && n > 0 ? n : null;
 };
 
-/**
- * Extrai o salaId do texto lido no QR Code.
- * Formatos aceitos: "senaigo:sala:1", JSON {"salaId":1} ou URL com ?salaId=1 (ou /sala/1).
- * Retorna null quando o QR Code não pertence ao sistema.
- */
+
 export const parseQrPayload = (text) => {
   const content = String(text || '').trim();
   if (!content) return null;
