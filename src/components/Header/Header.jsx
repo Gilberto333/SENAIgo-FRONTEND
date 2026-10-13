@@ -1,18 +1,19 @@
 import React from 'react';
 import { Link, useNavigate, useLocation } from 'react-router-dom';
 import { useAuth } from '../../hooks/useAuth';
-import { env } from '../../config/env';
+import { useProgresso } from '../../hooks/useProgresso';
 import Logo from '../Logo/Logo';
-import { ShoppingBag, LogOut, MapPin, Trophy, User } from 'lucide-react';
+import { ShoppingBag, LogOut, MapPin, Trophy, User, Settings } from 'lucide-react';
 import styles from './Header.module.css';
 
 const Header = () => {
-  const { user, visitedRooms, totalPoints, logout } = useAuth();
+  const { user, isAdmin, logout } = useAuth();
+  const { salas, visitedRooms, saldo } = useProgresso();
   const navigate = useNavigate();
   const location = useLocation();
 
   const handleLogout = () => { logout(); navigate('/login'); };
-  const totalSalasDisponiveis = env.totalAreas;
+  const totalSalasDisponiveis = salas.length;
   const salasVisitadasCount = visitedRooms.length;
 
   return (
@@ -24,9 +25,10 @@ const Header = () => {
           <div className={styles.badgeVisitas}><MapPin size={16} className={styles.badgeIcon} /><span><strong>{salasVisitadasCount}</strong> / {totalSalasDisponiveis} áreas visitadas</span></div>
         </div>
         <div className={styles.rightSection}>
-          <div className={styles.pointsPill}><Trophy size={16} className={styles.trophyIcon} /><span><strong>{totalPoints}</strong> pts</span></div>
+          <div className={styles.pointsPill}><Trophy size={16} className={styles.trophyIcon} /><span><strong>{saldo}</strong> pts</span></div>
           <nav className={styles.navLinks}>
-            <Link to="/loja" className={`${styles.navBtn} ${location.pathname === '/loja' ? styles.active : ''}`}><ShoppingBag size={18} /><span>Loja</span></Link>
+            {isAdmin && <Link to="/admin/loja" aria-label="Gerenciar" className={`${styles.navBtn} ${location.pathname.startsWith('/admin') ? styles.active : ''}`}><Settings size={18} /><span>Gerenciar</span></Link>}
+            <Link to="/loja" aria-label="Loja" className={`${styles.navBtn} ${location.pathname === '/loja' ? styles.active : ''}`}><ShoppingBag size={18} /><span>Loja</span></Link>
             <button onClick={handleLogout} className={styles.logoutBtn} title="Sair"><LogOut size={18} /></button>
           </nav>
         </div>
